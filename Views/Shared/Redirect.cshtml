@@ -1,0 +1,11 @@
+@model HomeServing.SSO.Modules.Account.RedirectViewModel
+
+<div class="redirect-page">
+    <div class="lead">
+        <h1>您现在将返回原来的应用程序</h1>
+        <p>完成后, 选项卡将会关闭, 请不要自己操作, 避免出现问题.</p>
+    </div>
+</div>
+
+<meta http-equiv="refresh" content="0;url=@Model.RedirectUrl" data-url="@Model.RedirectUrl">
+<script src="~/js/signin-redirect.js"></script>

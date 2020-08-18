@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeServing.SSO", "HomeServing.SSO.csproj", "{737C18EE-09DD-4D5A-8AAF-DB7C33A6019A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{737C18EE-09DD-4D5A-8AAF-DB7C33A6019A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{737C18EE-09DD-4D5A-8AAF-DB7C33A6019A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{737C18EE-09DD-4D5A-8AAF-DB7C33A6019A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{737C18EE-09DD-4D5A-8AAF-DB7C33A6019A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

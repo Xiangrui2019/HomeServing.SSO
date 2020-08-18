@@ -1,0 +1,150 @@
+﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
+
+using System;
+using System.Linq;
+using System.Security.Claims;
+using IdentityModel;
+using HomeServing.SSO.Data;
+using HomeServing.SSO.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Serilog;
+using Microsoft.Extensions.Configuration;
+using IdentityServer4.EntityFramework.Storage;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
+
+namespace HomeServing.SSO
+{
+    public class SeedData
+    {
+        public static void EnsureSeedData(string connectionString)
+        {
+            var services = new ServiceCollection();
+
+            services.AddLogging();
+            
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlite(connectionString));
+
+            services.AddOperationalDbContext(options =>
+            {
+                options.ConfigureDbContext = db => db.UseSqlite(connectionString, sql => sql.MigrationsAssembly(typeof(SeedData).Assembly.FullName));
+            });
+            services.AddConfigurationDbContext(options =>
+            {
+                options.ConfigureDbContext = db => db.UseSqlite(connectionString, sql => sql.MigrationsAssembly(typeof(SeedData).Assembly.FullName));
+            });
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+            using (var serviceProvider = services.BuildServiceProvider())
+            {
+                using (var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                {
+                    // 迁移数据库
+                    MigrateDatabase(scope);
+                    // 创建默认用户
+                    CreateDefaultAdminUser(scope);
+                    // 创建客户端
+                    CreateClients(scope);
+                }
+            }
+        }
+
+        public static void CreateDefaultAdminUser(IServiceScope scope)
+        {
+            var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var admin = userMgr.FindByNameAsync("Administrator").Result;
+            if (admin == null)
+            {
+                admin = new ApplicationUser
+                {
+                    UserName = "Administrator",
+                    NikeName = $"nike_administrator",
+                    Bio = "这个人很懒, 什么都没有写.",
+                    Avatar = "",
+                };
+
+                var result = userMgr.CreateAsync(admin, "Password1234$").Result;
+                if (!result.Succeeded)
+                {
+                    throw new Exception(result.Errors.First().Description);
+                }
+
+                Log.Debug("admin created");
+            }
+            else
+            {
+                Log.Debug("admin already exists");
+            }
+        }
+
+        public static void CreateClients(IServiceScope scope)
+        {
+            var configurationContext = scope.ServiceProvider.GetService<ConfigurationDbContext>();
+
+            // 创建认证资源
+            foreach (var resource in Config.IdentityResources.ToList())
+            {
+                var resource_c = configurationContext.IdentityResources.Where(c => c.Name == resource.ToEntity().Name).Count();
+
+                if (resource_c == 0)
+                {
+                    configurationContext.IdentityResources.Add(resource.ToEntity());
+                    Log.Debug("a identity resources created.");
+                }
+                else
+                {
+                    Log.Debug("identity resources already exists.");
+                }
+            }
+
+            // 创建API Scope
+            foreach (var resource in Config.ApiScopes.ToList())
+            {
+                var resource_c = configurationContext.ApiScopes.Where(c => c.Name == resource.ToEntity().Name).Count();
+
+                if (resource_c == 0)
+                {
+                    configurationContext.ApiScopes.Add(resource.ToEntity());
+                    Log.Debug("a api scope created.");
+                }
+                else
+                {
+                    Log.Debug("api scope already exists.");
+                }
+            }
+            
+            // 创建客户端
+            foreach (var resource in Config.Clients())
+            {
+                var resource_c = configurationContext.Clients.Where(c => c.ClientId == resource.ToEntity().ClientId).Count();
+
+                if (resource_c == 0)
+                {
+                    configurationContext.Clients.Add(resource.ToEntity());
+                    Log.Debug("a clients created.");
+                }
+                else
+                {
+                    Log.Debug("clients already exists.");
+                }
+            }
+
+            configurationContext.SaveChanges();
+        }
+
+        public static void MigrateDatabase(IServiceScope scope)
+        {
+            scope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
+            scope.ServiceProvider.GetService<PersistedGrantDbContext>().Database.Migrate();
+            scope.ServiceProvider.GetService<ConfigurationDbContext>().Database.Migrate();
+        }
+    }
+}

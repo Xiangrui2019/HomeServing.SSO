@@ -1,0 +1,38 @@
+﻿@model HomeServing.SSO.Modules.Account.RegisterViewModel
+
+<div class="register-page">
+    <div class="lead">
+        <h1>注册</h1>
+        <p>请注册一个账户.</p>
+    </div>
+
+    <partial name="_ValidationSummary" />
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2>本地账户</h2>
+                </div>
+
+                <div class="card-body">
+                    <form asp-route="Register">
+                        <input type="hidden" asp-for="ReturnUrl" />
+
+                        <div class="form-group">
+                            <label>用户名</label>
+                            <input class="form-control" placeholder="用户名" asp-for="Username" autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label>密码</label>
+                            <input type="password" class="form-control" placeholder="密码" asp-for="Password" autocomplete="off">
+                        </div>
+
+                        <button class="btn btn-primary" name="button" value="register" type="submit">注册</button>
+                        <button class="btn btn-secondary" name="button" value="cancel" type="submit">取消</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
