@@ -212,7 +212,6 @@ namespace HomeServing.SSO.Modules.Account
             return View(vm);
         }
 
-
         /// <summary>
         /// Show logout page
         /// </summary>

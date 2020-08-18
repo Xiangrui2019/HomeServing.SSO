@@ -30,6 +30,7 @@ namespace HomeServing.SSO.Services
                 new Claim(JwtClaimTypes.Name, user.NormalizedUserName),
                 new Claim(JwtClaimTypes.Profile, user.Bio),
                 new Claim(JwtClaimTypes.Picture, user.Avatar),
+                new Claim(JwtClaimTypes.Gender, user.Gender.ToString())
             };
 
             return claims;
