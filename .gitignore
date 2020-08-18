@@ -9,3 +9,4 @@ obj/
 app.jwk
 AspIdUsers.db
 HomeServing.SSO.csproj.user
+.vscode
