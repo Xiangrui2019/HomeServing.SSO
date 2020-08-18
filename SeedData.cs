@@ -69,6 +69,7 @@ namespace HomeServing.SSO
                     NikeName = $"nike_administrator",
                     Bio = "这个人很懒, 什么都没有写.",
                     Avatar = "",
+                    Gender = Gender.男,
                 };
 
                 var result = userMgr.CreateAsync(admin, "Password1234$").Result;

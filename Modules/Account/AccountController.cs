@@ -194,6 +194,7 @@ namespace HomeServing.SSO.Modules.Account
                     NikeName = $"nike_{vm.Username}",
                     Bio = "这个人很懒, 什么都没有写.",
                     Avatar = _configuration["DefaultAvatar"],
+                    Gender = Gender.未知,
                 };
 
                 var result = await _userManager.CreateAsync(user, vm.Password);
