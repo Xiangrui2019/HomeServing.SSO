@@ -36,7 +36,6 @@ namespace HomeServing.SSO.Modules.Account
         private readonly IEventService _events;
         private readonly IConfiguration _configuration;
         private readonly OssClient _ossClient;
-        private readonly FileExtensionContentTypeProvider _extensionContentTypeProdvider;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -46,8 +45,7 @@ namespace HomeServing.SSO.Modules.Account
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events,
             IConfiguration configuration,
-            OssClient ossClient,
-            FileExtensionContentTypeProvider extensionContentTypeProdvider)
+            OssClient ossClient)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -57,7 +55,6 @@ namespace HomeServing.SSO.Modules.Account
             _events = events;
             _configuration = configuration;
             _ossClient = ossClient;
-            _extensionContentTypeProdvider = extensionContentTypeProdvider;
         }
 
         /// <summary>
@@ -357,7 +354,7 @@ namespace HomeServing.SSO.Modules.Account
                 genObjectName,
                 stream);
 
-            user.Avatar = $"{_configuration["SSOServiceUrl"]}/Account/GetAvatarFile?regexName={genObjectName}%%{Endfix}";
+            user.Avatar = $"{_configuration["SSOServiceUrl"]}/File/GetAvatarFile?regexName={genObjectName}%%{Endfix}";
 
             var result = await _userManager.UpdateAsync(user);
 
@@ -371,34 +368,6 @@ namespace HomeServing.SSO.Modules.Account
             }
 
             return View(vm);
-        }
-
-        [HttpGet]
-        public IActionResult GetAvatarFile([FromQuery] string regexName)
-        {
-            var splited = regexName.Split("%%");
-            var objectName = splited[0];
-            var endFix = $".{splited[1].ToLower()}";
-
-            var obj = _ossClient.GetObject(
-                _configuration["AliyunOSS:BucketName"],
-                objectName);
-            var memoryStream = new MemoryStream();
-            
-
-            using (var requestStream = obj.Content)
-            {
-                var buf = new byte[1024];
-                var len = 0;
-
-                while ((len = requestStream.Read(buf, 0, 1024)) != 0)
-                {
-                    memoryStream.Write(buf, 0, len);
-                }
-            }
-
-            return File(memoryStream.ToArray(),
-                _extensionContentTypeProdvider.Mappings[endFix]);
         }
 
         /// <summary>
