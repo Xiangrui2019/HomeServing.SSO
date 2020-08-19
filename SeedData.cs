@@ -102,6 +102,7 @@ namespace HomeServing.SSO
                 }
                 else
                 {
+                    configurationContext.IdentityResources.Update(resource.ToEntity());
                     Log.Debug("identity resources already exists.");
                 }
             }
@@ -118,6 +119,7 @@ namespace HomeServing.SSO
                 }
                 else
                 {
+                    configurationContext.ApiScopes.Update(resource.ToEntity());
                     Log.Debug("api scope already exists.");
                 }
             }
@@ -134,6 +136,7 @@ namespace HomeServing.SSO
                 }
                 else
                 {
+                    configurationContext.Clients.Update(resource.ToEntity());
                     Log.Debug("clients already exists.");
                 }
             }

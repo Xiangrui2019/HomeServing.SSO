@@ -212,7 +212,35 @@ namespace HomeServing.SSO.Modules.Account
 
             return View(vm);
         }
+/**
+        [HttpGet]
+        [Authorize]
+        public IActionResult UpdateProfile()
+        {
 
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult UpdateProfile()
+        {
+
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult UpdateAvatar()
+        {
+
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult UpdateAvatar()
+        {
+
+        }
+**/
         /// <summary>
         /// Show logout page
         /// </summary>
