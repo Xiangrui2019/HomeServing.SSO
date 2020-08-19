@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using Aliyun.OSS;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace HomeServing.SSO
 {
@@ -79,6 +81,12 @@ namespace HomeServing.SSO
                     options.ClientId = "copy client ID from Google here";
                     options.ClientSecret = "copy client secret from Google here";
                 });
+
+            services.AddSingleton(new OssClient(Configuration["AliyunOSS:Endpoint"],
+                Configuration["AliyunOSS:AccessKeyId"],
+                Configuration["AliyunOSS:AccessKeySecret"]));
+
+            services.AddSingleton(new FileExtensionContentTypeProvider());
 
             services.AddControllersWithViews();
         }

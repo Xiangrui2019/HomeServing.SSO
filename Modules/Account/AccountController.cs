@@ -3,8 +3,11 @@
 
 
 using System;
+using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
+using Aliyun.OSS;
 using HomeServing.SSO.Models;
 using IdentityModel;
 using IdentityServer4.Events;
@@ -16,6 +19,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 
 namespace HomeServing.SSO.Modules.Account
@@ -31,6 +35,8 @@ namespace HomeServing.SSO.Modules.Account
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IEventService _events;
         private readonly IConfiguration _configuration;
+        private readonly OssClient _ossClient;
+        private readonly FileExtensionContentTypeProvider _extensionContentTypeProdvider;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -39,7 +45,9 @@ namespace HomeServing.SSO.Modules.Account
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            OssClient ossClient,
+            FileExtensionContentTypeProvider extensionContentTypeProdvider)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -48,6 +56,8 @@ namespace HomeServing.SSO.Modules.Account
             _schemeProvider = schemeProvider;
             _events = events;
             _configuration = configuration;
+            _ossClient = ossClient;
+            _extensionContentTypeProdvider = extensionContentTypeProdvider;
         }
 
         /// <summary>
@@ -208,39 +218,189 @@ namespace HomeServing.SSO.Modules.Account
                 {
                     return Redirect(vm.ReturnUrl);
                 }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "注册用户出现未知问题!");
+                }
             }
 
             return View(vm);
         }
-/**
+
+        private UpdateProfileViewModel BuildUpdateProfileViewModel(ApplicationUser user)
+        {
+            return new UpdateProfileViewModel
+            {
+                UserName = user.UserName,
+                NickName = user.NikeName,
+                Bio = user.Bio,
+                Gender = user.Gender,
+            };
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UpdateProfile()
+        {
+            if (User?.Identity.IsAuthenticated == false)
+            {
+                return Redirect("~/Account/Login");
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            var vm = BuildUpdateProfileViewModel(user);
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfile(UpdateProfileViewModel vm)
+        {
+            if (User?.Identity.IsAuthenticated == false)
+            {
+                return Redirect("~/Account/Login");
+            }
+
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByNameAsync(vm.UserName);
+                user.NikeName = vm.NickName;
+                user.Bio = vm.Bio;
+                user.Gender = vm.Gender;
+
+                var result = await _userManager.UpdateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    return Redirect("/Account/UpdateProfile");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "更新用户信息失败.");
+                }
+            }
+
+            return View(vm);
+        }
+
+
+        [HttpGet]
+        public IActionResult UpdatePassword()
+        {
+            if (User?.Identity.IsAuthenticated == false)
+            {
+                return Redirect("~/Account/Login");
+            }
+
+            return View(new UpdatePasswordViewModel());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePassword(UpdatePasswordViewModel vm)
+        {
+            if (User?.Identity.IsAuthenticated == false)
+            {
+                return Redirect("~/Account/Login");
+            }
+
+            if (vm.NewPassword == vm.ConfirmNewPassword)
+            {
+                var user = await GetCurrentUser();
+
+                var result = await _userManager.ChangePasswordAsync(user, vm.OldPassword, vm.NewPassword);
+
+                if (result.Succeeded)
+                {
+                    return Redirect("~/Account/UpdatePassword");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "更新用户密码失败.");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "您的新密码和确认密码不匹配.");
+            }
+
+            return View(vm);
+        }
+
+
         [HttpGet]
         [Authorize]
-        public IActionResult UpdateProfile()
+        public async Task<IActionResult> UpdateAvatar()
         {
+            if (User?.Identity.IsAuthenticated == false)
+            {
+                return Redirect("~/Account/Login");
+            }
 
+            var user = await GetCurrentUser();
+
+            return View(new UpdateAvatarViewModel
+            {
+                AvatarUrl = user.Avatar,
+            });
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult UpdateProfile()
+        public async Task<IActionResult> UpdateAvatar(UpdateAvatarViewModel vm)
         {
+            var stream = vm.Avatar.OpenReadStream();
+            var user = await GetCurrentUser();
+            var Endfix = vm.Avatar.FileName.Split(".").Reverse().First().ToString();
+            var genObjectName = $"{user.UserName}_{Guid.NewGuid().ToString()}.{Endfix}";
+            
+            _ossClient.PutObject(
+                _configuration["AliyunOSS:BucketName"],
+                genObjectName,
+                stream);
 
+            user.Avatar = $"{_configuration["SSOServiceUrl"]}/Account/GetAvatarFile?regexName={genObjectName}%%{Endfix}";
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                return Redirect("/Account/UpdateAvatar");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "更新用户头像失败.");
+            }
+
+            return View(vm);
         }
 
         [HttpGet]
-        [Authorize]
-        public IActionResult UpdateAvatar()
+        public IActionResult GetAvatarFile([FromQuery] string regexName)
         {
+            var splited = regexName.Split("%%");
+            var objectName = splited[0];
+            var endFix = $".{splited[1].ToLower()}";
 
+            var obj = _ossClient.GetObject(
+                _configuration["AliyunOSS:BucketName"],
+                objectName);
+            var memoryStream = new MemoryStream();
+            
+
+            using (var requestStream = obj.Content)
+            {
+                var buf = new byte[1024];
+                var len = 0;
+
+                while ((len = requestStream.Read(buf, 0, 1024)) != 0)
+                {
+                    memoryStream.Write(buf, 0, len);
+                }
+            }
+
+            return File(memoryStream.ToArray(),
+                _extensionContentTypeProdvider.Mappings[endFix]);
         }
 
-        [HttpPost]
-        [Authorize]
-        public IActionResult UpdateAvatar()
-        {
-
-        }
-**/
         /// <summary>
         /// Show logout page
         /// </summary>
@@ -432,5 +592,7 @@ namespace HomeServing.SSO.Modules.Account
 
             return vm;
         }
+        
+        private Task<ApplicationUser> GetCurrentUser() => _userManager.GetUserAsync(User);
     }
 }

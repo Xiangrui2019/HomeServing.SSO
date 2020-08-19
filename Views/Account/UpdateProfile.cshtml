@@ -1,0 +1,46 @@
+@model HomeServing.SSO.Modules.Account.UpdateProfileViewModel
+
+
+<div class="update-profile-page">
+    <div class="lead">
+        <h1>更新账户信息</h1>
+        <p>更新您账户的个人信息.</p>
+    </div>
+
+    <partial name="_ValidationSummary" />
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2>更新账户信息</h2>
+                </div>
+
+                <div class="card-body">
+                    <form method="post" asp-route="Register">
+                        <div class="form-group">
+                            <label>用户名</label>
+                            <input class="form-control" placeholder="用户名" asp-for="UserName" autofocus readonly />
+                        </div>
+                        <div class="form-group">
+                            <label>昵称</label>
+                            <input type="text" class="form-control" placeholder="昵称" asp-for="NickName" />
+                        </div>
+                        <div class="form-group">
+                            <label>个人简介</label>
+                            <textarea class="form-control" placeholder="个人简介" asp-for="Bio" autocomplete="on"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>性别</label>
+                            <select class="form-control"
+                                    asp-items="@Html.GetEnumSelectList(typeof(HomeServing.SSO.Models.Gender))"
+                                    asp-for="Gender"></select>
+                        </div>
+
+                        <button class="btn btn-primary" name="button" value="update" type="submit">更新</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

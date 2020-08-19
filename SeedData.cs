@@ -102,7 +102,7 @@ namespace HomeServing.SSO
                 }
                 else
                 {
-                    configurationContext.IdentityResources.Update(resource.ToEntity());
+                    configurationContext.Update(configurationContext.IdentityResources.Where(c => c.Name == resource.ToEntity().Name).FirstOrDefault());
                     Log.Debug("identity resources already exists.");
                 }
             }
@@ -119,7 +119,7 @@ namespace HomeServing.SSO
                 }
                 else
                 {
-                    configurationContext.ApiScopes.Update(resource.ToEntity());
+                    configurationContext.Update(configurationContext.ApiScopes.Where(c => c.Name == resource.ToEntity().Name).FirstOrDefault());
                     Log.Debug("api scope already exists.");
                 }
             }
@@ -136,7 +136,7 @@ namespace HomeServing.SSO
                 }
                 else
                 {
-                    configurationContext.Clients.Update(resource.ToEntity());
+                    configurationContext.Update(configurationContext.Clients.Where(c => c.ClientId == resource.ToEntity().ClientId).FirstOrDefault());
                     Log.Debug("clients already exists.");
                 }
             }

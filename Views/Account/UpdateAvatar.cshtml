@@ -1,0 +1,37 @@
+@model HomeServing.SSO.Modules.Account.UpdateAvatarViewModel
+
+<div class="update-avatar-page">
+    <div class="lead">
+        <h1>更新头像</h1>
+        <p>更新您账户的头像.</p>
+    </div>
+
+    <partial name="_ValidationSummary" />
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2>更新头像</h2>
+                </div>
+
+                <div class="card-body">
+                    <form enctype="multipart/form-data" method="post" asp-route="Register">
+                        <div>
+                            <label>头像</label>
+                            <br />
+                            <img height="100" width="100" class="rounded" src="@Model.AvatarUrl" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>新头像</label>
+                            <input type="file" class="form-control" placeholder="旧密码" asp-for="Avatar" />
+                        </div>
+
+                        <button class="btn btn-primary" name="button" value="update" type="submit">更新</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
