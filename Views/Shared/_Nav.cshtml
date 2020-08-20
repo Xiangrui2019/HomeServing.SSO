@@ -33,6 +33,21 @@
                 </li>
             </ul>
         }
+        else
+        {
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                        操作
+                    </a>
+
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" asp-action="Login" asp-controller="Account">登录</a>
+                        <a class="dropdown-item" asp-action="Register" asp-controller="Account">注册</a>
+                    </div>
+                </li>
+            </ul>
+        }
 
     </nav>
 </div>

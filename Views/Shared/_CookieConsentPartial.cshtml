@@ -1,0 +1,25 @@
+﻿@using Microsoft.AspNetCore.Http.Features
+
+@{
+    var consentFeature = Context.Features.Get<ITrackingConsentFeature>();
+    var showBanner = !consentFeature?.CanTrack ?? false;
+    var cookieString = consentFeature?.CreateConsentCookie();
+}
+
+@if (showBanner)
+{
+    <div id="cookieConsent" class="alert alert-info alert-dismissible fade show" role="alert">
+        本站基于IdentityServer4, 将会使用Cookie来保存用户登陆状态, 给您更好的用户体验.
+        <button type="button" class="accept-policy close" data-dismiss="alert" aria-label="Close" data-cookie-string="@cookieString">
+            <span>同意</span>
+        </button>
+    </div>
+    <script>
+        (function () {
+            var button = document.querySelector("#cookieConsent button[data-cookie-string]");
+            button.addEventListener("click", function (event) {
+                document.cookie = button.dataset.cookieString;
+            }, false);
+        })();
+    </script>
+}

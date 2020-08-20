@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using Aliyun.OSS;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.AspNetCore.Http;
 
 namespace HomeServing.SSO
 {
@@ -73,6 +74,12 @@ namespace HomeServing.SSO
                 options.User.RequireUniqueEmail = false;
             });
 
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
             services.AddAuthentication()
                 .AddGoogle(options =>
                 {
@@ -105,6 +112,7 @@ namespace HomeServing.SSO
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseCookiePolicy();
             app.UseRouting();
             app.UseIdentityServer();
             app.UseAuthorization();
