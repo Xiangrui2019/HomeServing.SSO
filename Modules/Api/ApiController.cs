@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace HomeServing.SSO.Modules.Api
 {
+    [LDAPAuth]
     public class ApiController : Controller
     {
         private readonly ConfigurationDbContext _configurationDbContext;
