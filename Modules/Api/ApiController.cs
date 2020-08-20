@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 
 namespace HomeServing.SSO.Modules.Api
 {
-    [LDAPAuth]
     public class ApiController : Controller
     {
         private readonly ConfigurationDbContext _configurationDbContext;
@@ -21,9 +20,6 @@ namespace HomeServing.SSO.Modules.Api
             _configurationDbContext = configurationDbContext;
         }
 
-        // ApiScopes
-        // Create/Update/Delete/List
-        
         [HttpPost]
         public async Task<IActionResult> CreateApiScope(ApiScope scope)
         {
@@ -88,9 +84,6 @@ namespace HomeServing.SSO.Modules.Api
 
             return Json(apiScopes);
         }
-
-        // Clients
-        // Create/Update/Delete/List/Show
 
         public async Task<IActionResult> CreateClient(IdentityServer4.Models.Client client)
         {
