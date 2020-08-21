@@ -3,6 +3,8 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <UserSecretsId>2f820929-0963-4a0a-bb19-cfb05d0c75cb</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <DockerfileContext>.</DockerfileContext>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,6 +15,8 @@
         <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.7" />
 
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.7" />
+
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
 
         <PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="3.2.0" />
         <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
