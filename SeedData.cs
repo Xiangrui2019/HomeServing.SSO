@@ -98,12 +98,10 @@ namespace HomeServing.SSO
                 {
                     var result = roleMgr.UpdateAsync(role).Result;
 
-                    if (!result.Succeeded)
+                    if (result.Succeeded)
                     {
-                        throw new Exception(result.Errors.First().Description);
+                        Log.Debug($"Role {role.Name} already exists");
                     }
-
-                    Log.Debug($"Role {role.Name} already exists");
                 }
             }
         }

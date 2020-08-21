@@ -249,13 +249,9 @@ namespace HomeServing.SSO.Modules.Account
         }
 
         [HttpGet]
+        [UserAuthorize]
         public async Task<IActionResult> UpdateProfile()
         {
-            if (User?.Identity.IsAuthenticated == false)
-            {
-                return Redirect("~/Account/Login");
-            }
-
             var user = await _userManager.GetUserAsync(User);
             var vm = BuildUpdateProfileViewModel(user);
 
@@ -263,13 +259,9 @@ namespace HomeServing.SSO.Modules.Account
         }
 
         [HttpPost]
+        [UserAuthorize]
         public async Task<IActionResult> UpdateProfile(UpdateProfileViewModel vm)
         {
-            if (User?.Identity.IsAuthenticated == false)
-            {
-                return Redirect("~/Account/Login");
-            }
-
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByNameAsync(vm.UserName);
@@ -293,24 +285,16 @@ namespace HomeServing.SSO.Modules.Account
         }
 
         [HttpGet]
+        [UserAuthorize]
         public IActionResult UpdatePassword()
         {
-            if (User?.Identity.IsAuthenticated == false)
-            {
-                return Redirect("~/Account/Login");
-            }
-
             return View(new UpdatePasswordViewModel());
         }
 
         [HttpPost]
+        [UserAuthorize]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordViewModel vm)
         {
-            if (User?.Identity.IsAuthenticated == false)
-            {
-                return Redirect("~/Account/Login");
-            }
-
             if (vm.NewPassword == vm.ConfirmNewPassword)
             {
                 var user = await GetCurrentUser();
@@ -336,14 +320,9 @@ namespace HomeServing.SSO.Modules.Account
 
 
         [HttpGet]
-        [Authorize]
+        [UserAuthorize]
         public async Task<IActionResult> UpdateAvatar()
         {
-            if (User?.Identity.IsAuthenticated == false)
-            {
-                return Redirect("~/Account/Login");
-            }
-
             var user = await GetCurrentUser();
 
             return View(new UpdateAvatarViewModel
@@ -353,7 +332,7 @@ namespace HomeServing.SSO.Modules.Account
         }
 
         [HttpPost]
-        [Authorize]
+        [UserAuthorize]
         public async Task<IActionResult> UpdateAvatar(UpdateAvatarViewModel vm)
         {
             var stream = vm.Avatar.OpenReadStream();
