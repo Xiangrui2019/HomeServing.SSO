@@ -47,11 +47,11 @@ namespace HomeServing.SSO
                 })
                 .AddConfigurationStore(options =>
                 {
-                    options.ConfigureDbContext = builder => builder.UseSqlite(connectionString, b => b.MigrationsAssembly("HomeServing.SSO"));
+                    options.ConfigureDbContext = builder => builder.UseSqlServer(connectionString, b => b.MigrationsAssembly("HomeServing.SSO"));
                 })
                 .AddOperationalStore(options =>
                 {
-                    options.ConfigureDbContext = builder => builder.UseSqlite(connectionString, b => b.MigrationsAssembly("HomeServing.SSO"));
+                    options.ConfigureDbContext = builder => builder.UseSqlServer(connectionString, b => b.MigrationsAssembly("HomeServing.SSO"));
 
                     options.EnableTokenCleanup = true;
                 })
