@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using IdentityServer4.EntityFramework.Storage;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
+using System.Collections.Generic;
 
 namespace HomeServing.SSO
 {
@@ -49,6 +50,8 @@ namespace HomeServing.SSO
                 {
                     // 迁移数据库
                     MigrateDatabase(scope);
+                    // 创建角色
+                    CreateDefaultRoles(scope);
                     // 创建默认用户
                     CreateDefaultAdminUser(scope);
                     // 创建客户端
@@ -57,32 +60,87 @@ namespace HomeServing.SSO
             }
         }
 
+        public static void CreateDefaultRoles(IServiceScope scope)
+        {
+            var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var defaultRoles = new List<IdentityRole>();
+
+            defaultRoles.Add(new IdentityRole
+            {
+                Name = "Administrators"
+            });
+
+            defaultRoles.Add(new IdentityRole
+            {
+                Name = "Secondary"
+            });
+
+            defaultRoles.Add(new IdentityRole
+            {
+                Name = "User"
+            });
+
+            foreach (var role in defaultRoles)
+            {
+                var role_s = roleMgr.FindByNameAsync(role.Name).Result;
+
+                if (role_s == null)
+                {
+                    var result = roleMgr.CreateAsync(role).Result;
+                    if (!result.Succeeded)
+                    {
+                        throw new Exception(result.Errors.First().Description);
+                    }
+
+                    Log.Debug($"Role {role.Name} created.");
+                }
+                else
+                {
+                    Log.Debug($"Role {role.Name} already exists");
+                }
+            }
+        }
+
         public static void CreateDefaultAdminUser(IServiceScope scope)
         {
             var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var admin = userMgr.FindByNameAsync("Administrator").Result;
             if (admin == null)
             {
                 admin = new ApplicationUser
                 {
                     UserName = "Administrator",
-                    NikeName = $"nike_administrator",
+                    NikeName = $"nick_administrator",
                     Bio = "这个人很懒, 什么都没有写.",
                     Avatar = "",
                     Gender = Gender.男,
                 };
 
-                var result = userMgr.CreateAsync(admin, "Password1234$").Result;
+                var result = userMgr.CreateAsync(admin, "Password@1234").Result;
                 if (!result.Succeeded)
                 {
                     throw new Exception(result.Errors.First().Description);
                 }
+
+                AddDefaultAdminToRole(userMgr, roleMgr);
 
                 Log.Debug("admin created");
             }
             else
             {
                 Log.Debug("admin already exists");
+            }
+        }
+
+        public static void AddDefaultAdminToRole(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        {
+            var user = userManager.FindByNameAsync("Administrator").Result;
+
+            var result = userManager.AddToRoleAsync(user, "Administrators").Result;
+            if (!result.Succeeded)
+            {
+                throw new Exception(result.Errors.First().Description);
             }
         }
 
