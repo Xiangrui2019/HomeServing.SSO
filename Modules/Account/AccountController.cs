@@ -30,6 +30,7 @@ namespace HomeServing.SSO.Modules.Account
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clientStore;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
@@ -40,6 +41,7 @@ namespace HomeServing.SSO.Modules.Account
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
+            RoleManager<IdentityRole> roleManager,
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
@@ -49,6 +51,7 @@ namespace HomeServing.SSO.Modules.Account
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _interaction = interaction;
             _clientStore = clientStore;
             _schemeProvider = schemeProvider;
@@ -198,7 +201,7 @@ namespace HomeServing.SSO.Modules.Account
                 var user = new ApplicationUser
                 {
                     UserName = vm.Username,
-                    NikeName = $"nike_{vm.Username}",
+                    NikeName = $"nick_{vm.Username}",
                     Bio = "这个人很懒, 什么都没有写.",
                     Avatar = _configuration["DefaultAvatar"],
                     Gender = Gender.未知,
@@ -213,7 +216,17 @@ namespace HomeServing.SSO.Modules.Account
 
                 if (result.Succeeded)
                 {
-                    return Redirect(vm.ReturnUrl);
+                    var user_s = await _userManager.FindByNameAsync(vm.Username);
+                    result = await _userManager.AddToRoleAsync(user_s, "User");
+
+                    if (result.Succeeded)
+                    {
+                        return Redirect(vm.ReturnUrl);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "给用户添加权限的时候出现问题!");
+                    }
                 }
                 else
                 {
@@ -278,7 +291,6 @@ namespace HomeServing.SSO.Modules.Account
 
             return View(vm);
         }
-
 
         [HttpGet]
         public IActionResult UpdatePassword()

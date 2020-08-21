@@ -67,12 +67,12 @@ namespace HomeServing.SSO
 
             defaultRoles.Add(new IdentityRole
             {
-                Name = "Administrators"
+                Name = "Root"
             });
 
             defaultRoles.Add(new IdentityRole
             {
-                Name = "Secondary"
+                Name = "Administrator"
             });
 
             defaultRoles.Add(new IdentityRole
@@ -96,6 +96,13 @@ namespace HomeServing.SSO
                 }
                 else
                 {
+                    var result = roleMgr.UpdateAsync(role).Result;
+
+                    if (!result.Succeeded)
+                    {
+                        throw new Exception(result.Errors.First().Description);
+                    }
+
                     Log.Debug($"Role {role.Name} already exists");
                 }
             }
@@ -137,7 +144,7 @@ namespace HomeServing.SSO
         {
             var user = userManager.FindByNameAsync("Administrator").Result;
 
-            var result = userManager.AddToRoleAsync(user, "Administrators").Result;
+            var result = userManager.AddToRoleAsync(user, "Root").Result;
             if (!result.Succeeded)
             {
                 throw new Exception(result.Errors.First().Description);
