@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HomeServing.SSO.Migrations.PersistedGrantDb
 {
-    public partial class AddIdentityServer4DbContext : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
