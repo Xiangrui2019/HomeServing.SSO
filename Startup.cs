@@ -80,15 +80,6 @@ namespace HomeServing.SSO
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddAuthentication()
-                .AddGoogle(options =>
-                {
-                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                    
-                    options.ClientId = "copy client ID from Google here";
-                    options.ClientSecret = "copy client secret from Google here";
-                });
-
             services.AddSingleton(new OssClient(Configuration["AliyunOSS:Endpoint"],
                 Configuration["AliyunOSS:AccessKeyId"],
                 Configuration["AliyunOSS:AccessKeySecret"]));
