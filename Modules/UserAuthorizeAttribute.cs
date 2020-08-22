@@ -35,7 +35,6 @@ namespace HomeServing.SSO.Modules
                 if (i == 0)
                 {
                     context.Result = new RedirectResult("~/Account/AccessDenied");
-                    return;
                 }
             }
         }
