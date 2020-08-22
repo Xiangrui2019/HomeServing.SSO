@@ -1,5 +1,4 @@
-﻿using IdentityServer4;
-using HomeServing.SSO.Data;
+﻿using HomeServing.SSO.Data;
 using HomeServing.SSO.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

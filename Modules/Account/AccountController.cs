@@ -5,7 +5,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Net.Mime;
 using System.Threading.Tasks;
 using Aliyun.OSS;
 using HomeServing.SSO.Models;
@@ -19,7 +18,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 
 namespace HomeServing.SSO.Modules.Account
@@ -150,7 +148,8 @@ namespace HomeServing.SSO.Modules.Account
                     else
                     {
                         // user might have clicked on a malicious link - should be logged
-                        throw new Exception("不合法的return URI");
+                        Exception exception = new Exception("不合法的return URI");
+                        throw exception;
                     }
                 }
 
@@ -178,17 +177,9 @@ namespace HomeServing.SSO.Modules.Account
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel vm, string button)
         {
-            if (Url.IsLocalUrl(vm.ReturnUrl))
-            {
-                vm.ReturnUrl = vm.ReturnUrl;
-            }
-            else if (string.IsNullOrEmpty(vm.ReturnUrl))
+            if (string.IsNullOrEmpty(vm.ReturnUrl))
             {
                 vm.ReturnUrl = "~/";
-            }
-            else
-            {
-                throw new Exception("不合法的return URI");
             }
 
             if (button != "register")
@@ -255,7 +246,7 @@ namespace HomeServing.SSO.Modules.Account
             var user = await _userManager.GetUserAsync(User);
             var vm = BuildUpdateProfileViewModel(user);
 
-            ViewBag["IsMyFriend"] = User.IsInRole("Friends") == true;
+            ViewBag["IsMyFriend"] = User.IsInRole("Friends");
 
             return View(vm);
         }
@@ -372,7 +363,7 @@ namespace HomeServing.SSO.Modules.Account
             // build a model so the logout page knows what to display
             var vm = await BuildLogoutViewModelAsync(logoutId);
 
-            if (vm.ShowLogoutPrompt == false)
+            if (!vm.ShowLogoutPrompt)
             {
                 // if the request for logout was properly authenticated from IdentityServer, then
                 // we don't need to show the prompt and can just log the user out directly.

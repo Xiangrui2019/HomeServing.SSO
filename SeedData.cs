@@ -4,14 +4,12 @@
 
 using System;
 using System.Linq;
-using IdentityModel;
 using HomeServing.SSO.Data;
 using HomeServing.SSO.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using Microsoft.Extensions.Configuration;
 using IdentityServer4.EntityFramework.Storage;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
@@ -19,7 +17,7 @@ using System.Collections.Generic;
 
 namespace HomeServing.SSO
 {
-    public class SeedData
+    public static class SeedData
     {
         public static void EnsureSeedData(string connectionString)
         {
@@ -93,7 +91,8 @@ namespace HomeServing.SSO
                     var result = roleMgr.CreateAsync(role).Result;
                     if (!result.Succeeded)
                     {
-                        throw new Exception(result.Errors.First().Description);
+                        Exception exception = new Exception(result.Errors.First().Description);
+                        throw exception;
                     }
 
                     Log.Debug($"Role {role.Name} created.");
@@ -129,7 +128,8 @@ namespace HomeServing.SSO
                 var result = userMgr.CreateAsync(admin, "Password@1234").Result;
                 if (!result.Succeeded)
                 {
-                    throw new Exception(result.Errors.First().Description);
+                    Exception exception = new Exception(result.Errors.First().Description);
+                    throw exception;
                 }
 
                 AddDefaultAdminToRole(userMgr, roleMgr);
@@ -149,7 +149,8 @@ namespace HomeServing.SSO
             var result = userManager.AddToRoleAsync(user, "Root").Result;
             if (!result.Succeeded)
             {
-                throw new Exception(result.Errors.First().Description);
+                Exception exception = new Exception(result.Errors.First().Description);
+                throw exception;
             }
         }
 
