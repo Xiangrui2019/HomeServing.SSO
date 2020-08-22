@@ -17,6 +17,10 @@
                 </div>
 
                 <div class="card-body">
+                    @if (ViewBag["IsMyFriend"] == true)
+                    {
+                        <p style="color: red;">You is my friend.</p>
+                    }
                     <form method="post" asp-route="Register">
                         <div class="form-group">
                             <label>用户名</label>

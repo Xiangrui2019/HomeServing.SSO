@@ -77,6 +77,11 @@ namespace HomeServing.SSO
 
             defaultRoles.Add(new IdentityRole
             {
+                Name = "Friends"
+            });
+
+            defaultRoles.Add(new IdentityRole
+            {
                 Name = "User"
             });
 

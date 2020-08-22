@@ -21,7 +21,18 @@ namespace HomeServing.SSO.Modules
 
             if (Role != "")
             {
-                if (context.HttpContext.User?.IsInRole(Role) == false)
+                var roles = Role.Split(",");
+                var i = 0;
+
+                foreach (var role in roles)
+                {
+                    if (context.HttpContext.User?.IsInRole(role) == true)
+                    {
+                        i = i + 1;
+                    }
+                }
+
+                if (i == 0)
                 {
                     context.Result = new RedirectResult("~/Account/AccessDenied");
                     return;
