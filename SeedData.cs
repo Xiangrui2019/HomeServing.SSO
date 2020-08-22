@@ -41,46 +41,28 @@ namespace HomeServing.SSO
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            using (var serviceProvider = services.BuildServiceProvider())
-            {
-                using (var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
-                {
-                    // 迁移数据库
-                    MigrateDatabase(scope);
-                    // 创建角色
-                    CreateDefaultRoles(scope);
-                    // 创建默认用户
-                    CreateDefaultAdminUser(scope);
-                    // 创建客户端
-                    CreateClients(scope);
-                }
-            }
+            using var serviceProvider = services.BuildServiceProvider();
+            using var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
+            // 迁移数据库
+            MigrateDatabase(scope);
+            // 创建角色
+            CreateDefaultRoles(scope);
+            // 创建默认用户
+            CreateDefaultAdminUser(scope);
+            // 创建客户端
+            CreateClients(scope);
         }
 
         public static void CreateDefaultRoles(IServiceScope scope)
         {
             var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var defaultRoles = new List<IdentityRole>();
-
-            defaultRoles.Add(new IdentityRole
+            var defaultRoles = new List<IdentityRole>
             {
-                Name = "Root"
-            });
-
-            defaultRoles.Add(new IdentityRole
-            {
-                Name = "Administrator"
-            });
-
-            defaultRoles.Add(new IdentityRole
-            {
-                Name = "Friends"
-            });
-
-            defaultRoles.Add(new IdentityRole
-            {
-                Name = "User"
-            });
+                new IdentityRole {Name = "Root"},
+                new IdentityRole {Name = "Administrator"},
+                new IdentityRole {Name = "Friends"},
+                new IdentityRole {Name = "User"}
+            };
 
             foreach (var role in defaultRoles)
             {
@@ -112,7 +94,6 @@ namespace HomeServing.SSO
         public static void CreateDefaultAdminUser(IServiceScope scope)
         {
             var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var admin = userMgr.FindByNameAsync("Administrator").Result;
             if (admin == null)
             {
@@ -132,7 +113,7 @@ namespace HomeServing.SSO
                     throw exception;
                 }
 
-                AddDefaultAdminToRole(userMgr, roleMgr);
+                AddDefaultAdminToRole(userMgr);
 
                 Log.Debug("admin created");
             }
@@ -142,7 +123,7 @@ namespace HomeServing.SSO
             }
         }
 
-        public static void AddDefaultAdminToRole(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public static void AddDefaultAdminToRole(UserManager<ApplicationUser> userManager)
         {
             var user = userManager.FindByNameAsync("Administrator").Result;
 

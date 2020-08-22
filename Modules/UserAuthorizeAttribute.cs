@@ -24,7 +24,7 @@ namespace HomeServing.SSO.Modules
                 {
                     if (context.HttpContext.User?.IsInRole(role) == true)
                     {
-                        i = i + 1;
+                        i += 1;
                     }
                 }
 
