@@ -16,9 +16,11 @@
             HomeServing's SSO
         </a>
 
-        @if (!string.IsNullOrWhiteSpace(name))
-        {
-            <ul class="navbar-nav mr-auto">
+        <ul class="navbar-nav mr-auto">
+
+            @if (!string.IsNullOrWhiteSpace(name))
+            {
+
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
                         @name <b class="caret"></b>
@@ -31,11 +33,22 @@
                         <a class="dropdown-item" asp-action="Logout" asp-controller="Account">登出</a>
                     </div>
                 </li>
-            </ul>
-        }
-        else
-        {
-            <ul class="navbar-nav mr-auto">
+
+                @if (User.IsInRole("Root") || User.IsInRole("Administrator"))
+                {
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                            系统管理
+                        </a>
+
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" asp-action="Index" asp-controller="User">用户管理</a>
+                        </div>
+                    </li>
+                }
+            }
+            else
+            {
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
                         操作
@@ -46,8 +59,7 @@
                         <a class="dropdown-item" asp-action="Register" asp-controller="Account">注册</a>
                     </div>
                 </li>
-            </ul>
-        }
-
+            }
+        </ul>
     </nav>
 </div>

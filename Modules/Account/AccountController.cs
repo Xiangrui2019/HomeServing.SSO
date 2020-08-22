@@ -246,8 +246,6 @@ namespace HomeServing.SSO.Modules.Account
             var user = await _userManager.GetUserAsync(User);
             var vm = BuildUpdateProfileViewModel(user);
 
-            ViewBag["IsMyFriend"] = User.IsInRole("Friends");
-
             return View(vm);
         }
 

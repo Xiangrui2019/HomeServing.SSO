@@ -15,7 +15,7 @@ namespace HomeServing.SSO.Modules
                 return;
             }
 
-            if (Role != "")
+            if (Role != null)
             {
                 var roles = Role.Split(",");
                 var i = 0;
