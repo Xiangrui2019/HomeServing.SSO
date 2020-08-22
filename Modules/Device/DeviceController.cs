@@ -15,7 +15,6 @@ using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace HomeServing.SSO.Modules.Device
@@ -27,18 +26,15 @@ namespace HomeServing.SSO.Modules.Device
         private readonly IDeviceFlowInteractionService _interaction;
         private readonly IEventService _events;
         private readonly IOptions<IdentityServerOptions> _options;
-        private readonly ILogger<DeviceController> _logger;
 
         public DeviceController(
             IDeviceFlowInteractionService interaction,
             IEventService eventService,
-            IOptions<IdentityServerOptions> options,
-            ILogger<DeviceController> logger)
+            IOptions<IdentityServerOptions> options)
         {
             _interaction = interaction;
             _events = eventService;
             _options = options;
-            _logger = logger;
         }
 
         [HttpGet]
@@ -67,7 +63,9 @@ namespace HomeServing.SSO.Modules.Device
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+#pragma warning disable S4457 // Parameter validation in "async"/"await" methods should be wrapped
         public async Task<IActionResult> Callback(DeviceAuthorizationInputModel model)
+#pragma warning restore S4457 // Parameter validation in "async"/"await" methods should be wrapped
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
@@ -102,7 +100,7 @@ namespace HomeServing.SSO.Modules.Device
                 if (model.ScopesConsented != null && model.ScopesConsented.Any())
                 {
                     var scopes = model.ScopesConsented;
-                    if (ConsentOptions.EnableOfflineAccess == false)
+                    if (!ConsentOptions.EnableOfflineAccess)
                     {
                         scopes = scopes.Where(x =>
                             x != IdentityServer4.IdentityServerConstants.StandardScopes.OfflineAccess);
@@ -222,7 +220,6 @@ namespace HomeServing.SSO.Modules.Device
             return new ScopeViewModel
             {
                 Value = parsedScopeValue.RawValue,
-                // todo: use the parsed scope value in the display?
                 DisplayName = apiScope.DisplayName ?? apiScope.Name,
                 Description = apiScope.Description,
                 Emphasize = apiScope.Emphasize,

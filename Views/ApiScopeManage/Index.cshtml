@@ -1,0 +1,43 @@
+﻿@model IEnumerable<IdentityServer4.EntityFramework.Entities.ApiScope>
+
+<div class="container">
+    <h1>Api Scope管理</h1>
+    
+    <partial name="_ValidationSummary" />
+    
+    <a class="btn btn-primary" asp-action="AddApiScope">添加Api Scope</a>
+
+    <table class="table table-striped table-responsive">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">名称</th>
+            <th scope="col">显示名称</th>
+            <th scope="col">介绍</th>
+            <th scope="col">是否启用</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var apiScope in Model)
+        {
+            <tr>
+                <th scope="row">@apiScope.Id</th>
+                <td>@apiScope.Name</td>
+                <td>@apiScope.DisplayName</td>
+                <td>@apiScope.Description</td>
+                <td>@apiScope.Enabled.ToString()</td>
+                <td scope="row">
+                    <form asp-action="DeleteApiScope" asp-route-id="@apiScope.Id" method="post">
+                        <a class="btn btn-primary" asp-action="EditApiScope" asp-route-id="@apiScope.Id">编辑</a>
+                        <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('确认删除这个 ApiScope?');">
+                            删除
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,48 @@
+﻿@model HomeServing.SSO.Modules.ApiScopeManage.ApiScopeAddViewModel
+
+<div class="add-api-scope">
+    <div class="lead">
+        <h1>添加 Api Scope</h1>
+    </div>
+
+    <partial name="_ValidationSummary" />
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Api Scope</h2>
+                </div>
+
+                <div class="card-body">
+                    <form method="post">
+                        <div class="form-group">
+                            <label>启用</label>
+                            <input class="form-control" type="checkbox" asp-for="Enabled" autofocus>
+                        </div>
+
+                        <div class="form-group">
+                            <label>名称(唯一)</label>
+                            <input class="form-control" placeholder="名称(唯一)" asp-for="Name" autofocus>
+                        </div>
+
+                        <div class="form-group">
+                            <label>显示名称</label>
+                            <input class="form-control" placeholder="显示名称" asp-for="DisplayName" autofocus>
+                        </div>
+
+                        <div class="form-group">
+                            <label>简介</label>
+                            <textarea class="form-control" placeholder="简介" asp-for="Description"></textarea>
+                        </div>
+
+                        <button class="btn btn-primary" name="button" type="submit">添加</button>
+                        &nbsp;
+                        <a class="btn btn-secondary" asp-action="Index">返回主页</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
