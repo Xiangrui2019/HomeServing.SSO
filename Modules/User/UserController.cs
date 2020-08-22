@@ -1,6 +1,7 @@
 ﻿using HomeServing.SSO.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,13 @@ namespace HomeServing.SSO.Modules.User
             UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var users = await  _userManager.Users.ToListAsync();
+
+            return View(users);
         }
     }
 }

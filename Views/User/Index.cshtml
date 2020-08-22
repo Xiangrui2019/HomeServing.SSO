@@ -1,0 +1,31 @@
+﻿@model IEnumerable<HomeServing.SSO.Models.ApplicationUser>
+
+<div class="container">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">用户名</th>
+                <th scope="col">昵称</th>
+                <th scope="col">个人简介</th>
+                <th scope="col">性别</th>
+                <th scope="col">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var u in Model)
+            {
+                <tr>
+                    <th scope="row">@u.Id</th>
+                    <td>@u.UserName</td>
+                    <td>@u.NikeName</td>
+                    <td>@u.Bio</td>
+                    <td>@u.Gender.ToString()</td>
+                    <td>
+                        daf
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

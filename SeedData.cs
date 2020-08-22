@@ -4,7 +4,6 @@
 
 using System;
 using System.Linq;
-using System.Security.Claims;
 using IdentityModel;
 using HomeServing.SSO.Data;
 using HomeServing.SSO.Models;
