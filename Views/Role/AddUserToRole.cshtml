@@ -1,0 +1,39 @@
+﻿@model HomeServing.SSO.Modules.Role.UserRoleViewModel
+
+<div class="update-profile-page">
+    <div class="lead">
+        <h1>添加用户到角色</h1>
+    </div>
+
+    <partial name="_ValidationSummary" />
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2>添加用户到角色</h2>
+                </div>
+
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" name="RoleId" value="@Model.RoleId" />
+
+                        <div class="form-group">
+                            <label>用户</label>
+
+                            <select class="form-control" asp-for="UserId" asp-items="@(new SelectList(Model.Users, "Id", "UserName"))">
+                                <option> -- 请选择一个用户 -- </option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn-primary" name="button" value="add" type="submit">添加</button>
+                        &nbsp;
+                        <a class="btn btn-secondary" asp-action="EditRole" asp-route-id="@Model.RoleId">返回角色页面</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

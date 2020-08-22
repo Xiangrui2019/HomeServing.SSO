@@ -1,17 +1,20 @@
 ﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
 
 <div class="container">
-    <h1>权限管理</h1>
-    
+    <h1>角色管理</h1>
+
     <partial name="_ValidationSummary" />
+
+    <a asp-action="AddRole" class="btn btn-primary">添加角色</a>
+    &nbsp;
 
     <table class="table table-striped table-responsive">
         <thead class="thead-dark">
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">权限名称</th>
-            <th scope="col">操作</th>
-        </tr>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">角色名称</th>
+                <th scope="col">操作</th>
+            </tr>
         </thead>
         <tbody>
             @foreach (var r in Model)
@@ -20,7 +23,13 @@
                     <th scope="row">@r.Id</th>
                     <td>@r.Name</td>
                     <td>
-                        xxxxx
+                        <form asp-action="DeleteRole" asp-route-id="@r.Id" method="post">
+                            <a class="btn btn-primary" asp-action="EditRole" asp-route-id="@r.Id">编辑</a>
+                            <button type="submit" class="btn btn-danger"
+                                    onclick="return confirm('确认删除这个角色?');">
+                                删除
+                            </button>
+                        </form>
                     </td>
                 </tr>
             }

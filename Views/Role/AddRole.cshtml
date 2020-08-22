@@ -1,0 +1,32 @@
+﻿@model HomeServing.SSO.Modules.Role.RoleAddViewModel
+
+<div class="add-role-page">
+    <div class="lead">
+        <h1>添加角色</h1>
+    </div>
+
+    <partial name="_ValidationSummary" />
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2>本地角色</h2>
+                </div>
+
+                <div class="card-body">
+                    <form method="post">
+                        <div class="form-group">
+                            <label>角色名称</label>
+                            <input class="form-control" placeholder="角色名称" asp-for="RoleName" autofocus>
+                        </div>
+
+                        <button class="btn btn-primary" name="button" value="register" type="submit">添加</button>
+                        &nbsp;
+                        <a class="btn btn-secondary" asp-action="Index">返回主页</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace HomeServing.SSO.Modules.User
 {
+    [UserAuthorize(Role = "Root,Administrator")]
     public class UserController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -81,7 +82,7 @@ namespace HomeServing.SSO.Modules.User
                 ModelState.AddModelError(string.Empty, "无法找到这个用户");
             }
 
-            return RedirectToAction("Index");
+            return View("Index", await _userManager.Users.AsNoTracking().ToListAsync());
         }
 
         [HttpPost]
