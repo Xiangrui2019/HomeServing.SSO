@@ -326,7 +326,7 @@ namespace HomeServing.SSO.Modules.Account
             var stream = vm.Avatar.OpenReadStream();
             var user = await GetCurrentUser();
             var endfix = vm.Avatar.FileName.Split(".").Reverse().First().ToString();
-            var genObjectName = $"{user.UserName}_{Guid.NewGuid().ToString()}.{endfix}";
+            var genObjectName = $"{user.UserName}_{Guid.NewGuid()}.{endfix}";
             
             _ossClient.PutObject(
                 _configuration["AliyunOSS:BucketName"],

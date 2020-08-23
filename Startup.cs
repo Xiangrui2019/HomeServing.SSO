@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using Aliyun.OSS;
+using AutoMapper;
+using HomeServing.SSO.Services;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.AspNetCore.Http;
 
@@ -83,6 +85,7 @@ namespace HomeServing.SSO
                 Configuration["AliyunOSS:AccessKeyId"],
                 Configuration["AliyunOSS:AccessKeySecret"]));
 
+            services.AddAutoMapper(typeof(AutoMapperConfig));
             services.AddSingleton(new FileExtensionContentTypeProvider());
 
             services.AddControllersWithViews();
