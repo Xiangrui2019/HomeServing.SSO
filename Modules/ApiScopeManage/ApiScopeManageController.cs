@@ -190,6 +190,73 @@ namespace HomeServing.SSO.Modules.ApiScopeManage
             return RedirectToAction("EditApiScope", new { id = apiScope.Id });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> DeleteClaimFromApiScope(int id)
+        {
+            var apiScope = await _configurationDbContext
+                .ApiScopes
+                .Where(q => q.Id == id)
+                .Include(q => q.UserClaims)
+                .FirstOrDefaultAsync();
+
+            if (apiScope == null)
+            {
+                ModelState.AddModelError(string.Empty, "您的Claim数据无法找到");
+
+                return View();
+            }
+
+            var vm = new ClaimToApiScopeViewModel
+            {
+                ApiScopeId = apiScope.Id,
+                ApiScopeClaims = new List<ApiScopeClaim>()
+            };
+
+            if (!apiScope.UserClaims.IsNullOrEmpty())
+            {
+                foreach (var claim in apiScope.UserClaims)
+                {
+                    vm.ApiScopeClaims.Add(claim);
+                }
+            }
+
+            return View(vm);
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> DeleteClaimFromApiScope(ClaimToApiScopeViewModel model)
+        {
+            var apiScope = await _configurationDbContext
+                .ApiScopes
+                .Where(q => q.Id == model.ApiScopeId)
+                .Include(q => q.UserClaims)
+                .FirstOrDefaultAsync();
+
+            if (apiScope == null)
+            {
+                ModelState.AddModelError(string.Empty, "您的ApiScopeId是错误的, 无法找到");
+
+                return View(model);
+            }
+
+            var userClaim = apiScope
+                .UserClaims
+                .FirstOrDefault(q => q.Type == model.ClaimType);
+
+            if (userClaim == null)
+            {
+                ModelState.AddModelError(string.Empty, "您的UserClaim没有任何信息, 找不到.");
+
+                return View(model);
+            }
+
+            apiScope.UserClaims.Remove(userClaim);
+
+            await _configurationDbContext.SaveChangesAsync();
+
+            return RedirectToAction("EditApiScope", new { id = apiScope.Id });
+        }
+
         [HttpPost]
         public async Task<IActionResult> DeleteApiScope(int id)
         {

@@ -1,0 +1,38 @@
+﻿@model HomeServing.SSO.Modules.ApiScopeManage.ClaimToApiScopeViewModel
+
+
+<div class="update-profile-page">
+    <div class="lead">
+        <h1>删除Claim从ApiScope</h1>
+    </div>
+
+    <partial name="_ValidationSummary" />
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2>删除Claim从ApiScope</h2>
+                </div>
+
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" name="ApiScopeId" value="@Model.ApiScopeId" />
+
+                        <div class="form-group">
+                            <label>User Claim</label>
+
+                            <select class="form-control" asp-for="ClaimType" asp-items="@(new SelectList(Model.ApiScopeClaims, "Type", "Type"))">
+                                <option> -- 请选择一个User Claim -- </option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn-primary" name="button" value="remove" type="submit">删除</button>
+                        &nbsp;
+                        <a class="btn btn-secondary" asp-action="EditApiScope" asp-route-id="@Model.ApiScopeId">返回主页</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
