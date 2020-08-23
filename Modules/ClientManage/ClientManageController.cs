@@ -15,11 +15,14 @@ namespace HomeServing.SSO.Modules.ClientManage
     public class ClientManageController : Controller
     {
         private readonly ConfigurationDbContext _configurationDbContext;
+        private readonly IMapper _mapper;
 
         public ClientManageController(
-            ConfigurationDbContext configurationDbContext)
+            ConfigurationDbContext configurationDbContext,
+            IMapper mapper)
         {
             _configurationDbContext = configurationDbContext;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -46,10 +49,42 @@ namespace HomeServing.SSO.Modules.ClientManage
         [HttpPost]
         public async Task<IActionResult> AddClient(ClientAddViewModel client)
         {
-            client.InitModel();
+            client.ToDatabase();
             var clientEntity = client.ToEntity();
 
             await _configurationDbContext.AddAsync(clientEntity);
+            await _configurationDbContext.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditClient(int id)
+        {
+            var clientEntity = await _configurationDbContext
+                .Clients
+                .AsNoTracking()
+                .FirstOrDefaultAsync(q => q.Id == id);
+
+            var client = clientEntity.ToModel();
+            var vm = _mapper.Map<Client, ClientEditViewModel>(client);
+
+            vm.ToViewModel();
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditClient(ClientEditViewModel vm)
+        {
+            vm.ToDatabase();
+            var clientS = await _configurationDbContext
+                .Clients
+                .FirstOrDefaultAsync(q => q.ClientId == vm.ClientId);
+
+            var clientEntity = 
+
+            _configurationDbContext.Update(clientEntity);
             await _configurationDbContext.SaveChangesAsync();
 
             return RedirectToAction("Index");

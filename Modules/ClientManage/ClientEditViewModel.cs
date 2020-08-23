@@ -6,9 +6,8 @@ using Novell.Directory.Ldap.Utilclass;
 
 namespace HomeServing.SSO.Modules.ClientManage
 {
-    public class ClientAddViewModel : Client
+    public class ClientEditViewModel : Client
     {
-        public string ClientSecretsString { get; set; }
         public string RedirectUrisString { get; set; }
         public string AllowedGrantTypesString { get; set; }
         public string PostLogoutRedirectUrisString { get; set; }
@@ -17,12 +16,22 @@ namespace HomeServing.SSO.Modules.ClientManage
 
         public void ToDatabase()
         {
-            StringToClientSecrets();
-            StringToRedirectUris();
             StringToAllowedGrantTypes();
             StringToPostLogoutRedirectUris();
+            StringToRedirectUris();
             StringToAllowedScopes();
             StringToAllowedCorsOrigins();
+
+            InitFields();
+        }
+
+        public void ToViewModel()
+        {
+            AllowedGrantTypesString = ToStringList(AllowedGrantTypes);
+            RedirectUrisString = ToStringList(RedirectUris);
+            PostLogoutRedirectUrisString = ToStringList(PostLogoutRedirectUris);
+            AllowedScopesString = ToStringList(AllowedScopes);
+            AllowedCorsOriginsString = ToStringList(AllowedCorsOrigins);
 
             InitFields();
         }
@@ -34,11 +43,11 @@ namespace HomeServing.SSO.Modules.ClientManage
             AlwaysSendClientClaims = true;
         }
 
-        public void StringToClientSecrets()
+        public void StringToAllowedGrantTypes()
         {
-            foreach (var secret in ToLists(ClientSecretsString))
+            foreach (var grantType in ToLists(AllowedGrantTypesString))
             {
-                ClientSecrets.Add(new Secret(secret.Sha256()));
+                AllowedGrantTypes.Add(grantType);
             }
         }
 
@@ -47,14 +56,6 @@ namespace HomeServing.SSO.Modules.ClientManage
             foreach (var redirectUri in ToLists(RedirectUrisString))
             {
                 RedirectUris.Add(redirectUri);
-            }
-        }
-
-        public void StringToAllowedGrantTypes()
-        {
-            foreach (var grantType in ToLists(AllowedGrantTypesString))
-            {
-                AllowedGrantTypes.Add(grantType);
             }
         }
 
@@ -90,6 +91,25 @@ namespace HomeServing.SSO.Modules.ClientManage
             }
 
             return source.Split("/");
+        }
+
+        public string ToStringList(IEnumerable<string> source)
+        {
+            var jBuilder = new StringBuilder();
+
+            var i = 0;
+            foreach (var strings in source)
+            {
+                jBuilder.Append(strings);
+                i += 1;
+            }
+
+            if (i != 0)
+            {
+                jBuilder.Remove(jBuilder.Length - 1, 1);
+            }
+
+            return jBuilder.ToString();
         }
     }
 }

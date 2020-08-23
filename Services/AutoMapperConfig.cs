@@ -10,6 +10,8 @@ namespace HomeServing.SSO.Services
         {
             CreateMap<ClientAddViewModel, Client>();
             CreateMap<Client, ClientAddViewModel>();
+            CreateMap<Client, ClientEditViewModel>();
+            CreateMap<ClientEditViewModel, Client>();
         }
     }
 }
