@@ -1,0 +1,41 @@
+﻿@model IEnumerable<IdentityServer4.EntityFramework.Entities.Client>
+
+<div class="container">
+    <h1>客户端管理</h1>
+
+    <partial name="_ValidationSummary" />
+
+    <a class="btn btn-primary" asp-action="AddClient">添加客户端</a>
+
+    <table class="table table-striped table-responsive">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">名称</th>
+                <th scope="col">简介</th>
+                <th scope="col">是否启用</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var client in Model)
+            {
+                <tr>
+                    <th scope="row">@client.Id</th>
+                    <td>@client.ClientName</td>
+                    <td>@client.Description</td>
+                    <td>@client.Enabled</td>
+                    <td scope="row">
+                        <form asp-action="DeleteClient" asp-route-id="@client.Id" method="post">
+                            <a class="btn btn-primary" asp-action="EditClient" asp-route-id="@client.Id">编辑</a>
+                            <button type="submit" class="btn btn-danger"
+                                    onclick="return confirm('确认删除这个客户端?');">
+                                删除
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

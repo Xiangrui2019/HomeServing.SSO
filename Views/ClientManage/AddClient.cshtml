@@ -1,0 +1,56 @@
+﻿<div class="add-client">
+    <div class="lead">
+        <h1>添加客户端</h1>
+    </div>
+
+    <partial name="_ValidationSummary" />
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2>客户端</h2>
+                </div>
+
+                <div class="card-body">
+                    <form method="post">
+                        <div class="form-group">
+                            <label>启用</label>
+                            <input class="form-control" type="checkbox" asp-for="Enabled" autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label>客户端ID</label>
+                            <input class="form-control" type="text" asp-for="ClientId" autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label>协议类型</label>
+                            <input class="form-control" type="text" asp-for="Enabled" autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label>启用</label>
+                            <input class="form-control" type="checkbox" asp-for="Enabled" autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label>启用</label>
+                            <input class="form-control" type="checkbox" asp-for="Enabled" autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label>启用</label>
+                            <input class="form-control" type="checkbox" asp-for="Enabled" autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label>启用</label>
+                            <input class="form-control" type="checkbox" asp-for="Enabled" autofocus>
+                        </div>
+
+                        <button class="btn btn-primary" name="button" type="submit">添加</button>
+                        &nbsp;
+                        <a class="btn btn-secondary" asp-action="Index">返回主页</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

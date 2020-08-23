@@ -35,7 +35,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Views\ClientManage\" />
       <Folder Include="wwwroot\lib\" />
     </ItemGroup>
 </Project>
