@@ -204,8 +204,8 @@ namespace HomeServing.SSO.Modules.Account
 
                 if (result.Succeeded)
                 {
-                    var user_s = await _userManager.FindByNameAsync(vm.Username);
-                    result = await _userManager.AddToRoleAsync(user_s, "User");
+                    var userS = await _userManager.FindByNameAsync(vm.Username);
+                    result = await _userManager.AddToRoleAsync(userS, "User");
 
                     if (result.Succeeded)
                     {
@@ -325,15 +325,15 @@ namespace HomeServing.SSO.Modules.Account
         {
             var stream = vm.Avatar.OpenReadStream();
             var user = await GetCurrentUser();
-            var Endfix = vm.Avatar.FileName.Split(".").Reverse().First().ToString();
-            var genObjectName = $"{user.UserName}_{Guid.NewGuid().ToString()}.{Endfix}";
+            var endfix = vm.Avatar.FileName.Split(".").Reverse().First().ToString();
+            var genObjectName = $"{user.UserName}_{Guid.NewGuid().ToString()}.{endfix}";
             
             _ossClient.PutObject(
                 _configuration["AliyunOSS:BucketName"],
                 genObjectName,
                 stream);
 
-            user.Avatar = $"{_configuration["SSOServiceUrl"]}/File/GetAvatarFile?regexName={genObjectName}%%{Endfix}";
+            user.Avatar = $"{_configuration["SSOServiceUrl"]}/File/GetAvatarFile?regexName={genObjectName}%%{endfix}";
 
             var result = await _userManager.UpdateAsync(user);
 
