@@ -1,10 +1,12 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace HomeServing.SSO.Modules.ClientManage
@@ -48,6 +50,32 @@ namespace HomeServing.SSO.Modules.ClientManage
             var clientEntity = client.ToEntity();
 
             await _configurationDbContext.AddAsync(clientEntity);
+            await _configurationDbContext.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteClient(int id)
+        {
+            var client = await _configurationDbContext
+                .Clients
+                .Where(q => q.Id == id)
+                .FirstOrDefaultAsync();
+
+            if (client == null)
+            {
+                var clients = await _configurationDbContext
+                    .Clients
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                ModelState.AddModelError(string.Empty, "无法找到对应的客户端.");
+
+                return View("Index", clients);
+            }
+
+            _configurationDbContext.Remove(client);
             await _configurationDbContext.SaveChangesAsync();
 
             return RedirectToAction("Index");
