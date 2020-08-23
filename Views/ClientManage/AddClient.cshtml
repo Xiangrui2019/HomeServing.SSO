@@ -17,55 +17,56 @@
                 <div class="card-body">
                     <form method="post">
                         <div class="form-group">
-                            <label>启用</label>
+                            <label>启用(Enabled)</label>
                             <input class="form-control" type="checkbox" asp-for="Enabled" autofocus>
                         </div>
                         <div class="form-group">
-                            <label>客户端ID</label>
+                            <label>客户端ID(ClientId)</label>
                             <input class="form-control" type="text" asp-for="ClientId" autofocus>
                         </div>
                         <div class="form-group">
-                            <label>客户端名称</label>
+                            <label>客户端名称(ClientName)</label>
                             <input class="form-control" type="text" asp-for="ClientName" autofocus>
                         </div>
                         <div class="form-group">
-                            <label>要求客户端Secret</label>
+                            <label>要求客户端Secret(RequireClientSecret)</label>
                             <input class="form-control" type="checkbox" asp-for="RequireClientSecret" autofocus>
                         </div>
                         <div class="form-group">
-                            <label>简介</label>
+                            <label>简介(Description)</label>
                             <input class="form-control" type="text" asp-for="Description" autofocus>
                         </div>
                         <div class="form-group">
-                            <label>客户端Uri</label>
+                            <label>客户端Uri(ClientUri)</label>
                             <input class="form-control" type="text" asp-for="ClientUri" autofocus>
                         </div>
                         <div class="form-group">
-                            <label>允许的授权方式(base64)</label>
-                            <input class="form-control" asp-for="AllowedGrantTypesString" autofocus>
-                        </div>
-                        <div class="form-group">
-                            <label>允许浏览器AccessToken</label>
+                            <label>允许浏览器AccessToken(AllowAccessTokensViaBrowser)</label>
                             <input class="form-control" type="checkbox" asp-for="AllowAccessTokensViaBrowser" autofocus>
                         </div>
                         <div class="form-group">
-                            <label>前端通道登出Uri</label>
+                            <label>前端通道登出Uri(FrontChannelLogoutUri)</label>
                             <input class="form-control" type="text" asp-for="FrontChannelLogoutUri" autofocus>
                         </div>
+                         = false;
                         <div class="form-group">
-                            <label>后端通道登出Uri</label>
+                            <label>在更新AK时刷新Claim(UpdateAccessTokenClaimsOnRefresh)</label>
+                            <input class="form-control" type="checkbox" asp-for="UpdateAccessTokenClaimsOnRefresh" autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label>后端通道登出Uri(BackChannelLogoutUri)</label>
                             <input class="form-control" type="text" asp-for="BackChannelLogoutUri" autofocus>
                         </div>
                         <div class="form-group">
-                            <label>允许离线访问</label>
+                            <label>允许离线访问(AllowOfflineAccess)</label>
                             <input class="form-control" type="checkbox" asp-for="AllowOfflineAccess" autofocus>
                         </div>
                         <div class="form-group">
-                            <label>启用本地登录</label>
+                            <label>启用本地登录(EnableLocalLogin)</label>
                             <input class="form-control" type="checkbox" asp-for="EnableLocalLogin" autofocus>
                         </div>
                         <div class="form-group">
-                            <label>授权码LifeTime</label>
+                            <label>AuthorizationCode LifeTime</label>
                             <input class="form-control" type="text" asp-for="AuthorizationCodeLifetime" autofocus>
                         </div>
                         <div class="form-group">
@@ -77,6 +78,14 @@
                             <input class="form-control" type="text" asp-for="IdentityTokenLifetime" autofocus>
                         </div>
                         <div class="form-group">
+                            <label>DeviceCode LifeTime</label>
+                            <input class="form-control" type="text" asp-for="DeviceCodeLifetime" autofocus>
+                        </div>
+                        <div class="form-group">
+                             <label>允许的授权方式(base64)</label>
+                             <input class="form-control" asp-for="AllowedGrantTypesString" autofocus>
+                        </div>
+                        <div class="form-group">
                             <label>客户端Secrets(Base64)</label>
                             <input class="form-control" type="text" asp-for="ClientSecretsString" autofocus>
                         </div>
@@ -85,15 +94,15 @@
                             <input class="form-control" asp-for="RedirectUrisString" autofocus>
                         </div>
                         <div class="form-group">
-                            <label>POST登出跳转Uris(base64)</label>
+                            <label>POST登出跳转Uris(Base64)</label>
                             <input class="form-control" asp-for="PostLogoutRedirectUrisString" autofocus>
                         </div>
                         <div class="form-group">
-                            <label>允许的Scope(base64)</label>
+                            <label>允许的Scope(Base64)</label>
                             <input class="form-control" asp-for="AllowedScopesString" autofocus>
                         </div>
                         <div class="form-group">
-                            <label>允许的CORS源(base64)</label>
+                            <label>允许的CORS源(Base64)</label>
                             <input class="form-control" asp-for="AllowedCorsOriginsString" autofocus>
                         </div>
 

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using IdentityServer4.Models;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -13,28 +15,31 @@ namespace HomeServing.SSO.Modules.ClientManage
         public string AllowedScopesString { get; set; }
         public string AllowedCorsOriginsString { get; set; }
 
-        public void ToEntity()
+        public void InitModel()
         {
-            
+            StringToClientSecrets();
+            StringToRedirectUris();
+            StringToAllowedGrantTypes();
+            StringToPostLogoutRedirectUris();
+            StringToAllowedScopes();
+            StringToAllowedCorsOrigins();
+
+            AlwaysIncludeUserClaimsInIdToken = true;
+            RefreshTokenUsage = TokenUsage.ReUse;
+            AlwaysSendClientClaims = true;
         }
 
         public void StringToClientSecrets()
         {
-            var raw = Base64ToString(ClientSecretsString);
-            var strings = raw.Split("/");
-
-            foreach (var secret in strings)
+            foreach (var secret in ToLists(ClientSecretsString))
             {
                 ClientSecrets.Add(new Secret(secret.Sha256()));
             }
         }
 
-        public void StringToRedirectUris(string source)
+        public void StringToRedirectUris()
         {
-            var raw = Base64ToString(RedirectUrisString);
-            var strings = raw.Split("/");
-
-            foreach (var redirectUri in strings)
+            foreach (var redirectUri in ToLists(RedirectUrisString))
             {
                 RedirectUris.Add(redirectUri);
             }
@@ -42,10 +47,7 @@ namespace HomeServing.SSO.Modules.ClientManage
 
         public void StringToAllowedGrantTypes()
         {
-            var raw = Base64ToString(AllowedGrantTypesString);
-            var strings = raw.Split("/");
-
-            foreach (var grantType in strings)
+            foreach (var grantType in ToLists(AllowedGrantTypesString))
             {
                 AllowedGrantTypes.Add(grantType);
             }
@@ -53,18 +55,40 @@ namespace HomeServing.SSO.Modules.ClientManage
 
         public void StringToPostLogoutRedirectUris()
         {
-            var raw = Base64ToString(PostLogoutRedirectUrisString);
-            var strings = raw.Split("/");
-
-            foreach (var postLogout in strings)
+            foreach (var postLogout in ToLists(PostLogoutRedirectUrisString))
             {
                 PostLogoutRedirectUris.Add(postLogout);
             }
         }
 
+        public void StringToAllowedScopes()
+        {
+            foreach (var scope in ToLists(AllowedScopesString))
+            {
+                AllowedScopes.Add(scope);
+            }
+        }
+
+        public void StringToAllowedCorsOrigins()
+        {
+            foreach (var origin in ToLists(AllowedScopesString))
+            {
+                AllowedCorsOrigins.Add(origin);
+            }
+        }
+
+        public IEnumerable<string> ToLists(string source)
+        {
+            var raw = Base64ToString(source);
+            var strings = raw.Split("/");
+
+            return strings;
+        }
+
         public string Base64ToString(string source)
         {
-            return "";
+            var bytes = Convert.FromBase64String(source);
+            return Encoding.UTF8.GetString(bytes);
         }
     }
 }

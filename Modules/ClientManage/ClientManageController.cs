@@ -36,12 +36,17 @@ namespace HomeServing.SSO.Modules.ClientManage
             return View(new ClientAddViewModel
             {
                 Enabled = true,
+                UpdateAccessTokenClaimsOnRefresh = true,
             });
         }
 
         [HttpPost]
         public async Task<IActionResult> AddClient(ClientAddViewModel client)
         {
+            client.InitModel();
+
+
+
             return View();
         }
     }
