@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeServing.SSO.Modules.ClientManage
 {
+    [UserAuthorize(Role = "Root,Administrator")]
     public class ClientManageController : Controller
     {
         private readonly ConfigurationDbContext _configurationDbContext;
