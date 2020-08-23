@@ -2,6 +2,7 @@
 using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
@@ -44,10 +45,12 @@ namespace HomeServing.SSO.Modules.ClientManage
         public async Task<IActionResult> AddClient(ClientAddViewModel client)
         {
             client.InitModel();
+            var clientEntity = client.ToEntity();
 
+            await _configurationDbContext.AddAsync(clientEntity);
+            await _configurationDbContext.SaveChangesAsync();
 
-
-            return View();
+            return RedirectToAction("Index");
         }
     }
 }

@@ -78,17 +78,6 @@ namespace HomeServing.SSO.Modules.ClientManage
         }
 
         public IEnumerable<string> ToLists(string source)
-        {
-            var raw = Base64ToString(source);
-            var strings = raw.Split("/");
-
-            return strings;
-        }
-
-        public string Base64ToString(string source)
-        {
-            var bytes = Convert.FromBase64String(source);
-            return Encoding.UTF8.GetString(bytes);
-        }
+            => source.Split("/");
     }
 }

@@ -48,14 +48,13 @@
                             <label>前端通道登出Uri(FrontChannelLogoutUri)</label>
                             <input class="form-control" type="text" asp-for="FrontChannelLogoutUri" autofocus>
                         </div>
-                         = false;
-                        <div class="form-group">
-                            <label>在更新AK时刷新Claim(UpdateAccessTokenClaimsOnRefresh)</label>
-                            <input class="form-control" type="checkbox" asp-for="UpdateAccessTokenClaimsOnRefresh" autofocus>
-                        </div>
                         <div class="form-group">
                             <label>后端通道登出Uri(BackChannelLogoutUri)</label>
                             <input class="form-control" type="text" asp-for="BackChannelLogoutUri" autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label>在更新AK时刷新Claim(UpdateAccessTokenClaimsOnRefresh)</label>
+                            <input class="form-control" type="checkbox" asp-for="UpdateAccessTokenClaimsOnRefresh" autofocus>
                         </div>
                         <div class="form-group">
                             <label>允许离线访问(AllowOfflineAccess)</label>
@@ -82,8 +81,8 @@
                             <input class="form-control" type="text" asp-for="DeviceCodeLifetime" autofocus>
                         </div>
                         <div class="form-group">
-                             <label>允许的授权方式(base64)</label>
-                             <input class="form-control" asp-for="AllowedGrantTypesString" autofocus>
+                            <label>允许的授权方式(base64)</label>
+                            <input class="form-control" asp-for="AllowedGrantTypesString" autofocus>
                         </div>
                         <div class="form-group">
                             <label>客户端Secrets(Base64)</label>
