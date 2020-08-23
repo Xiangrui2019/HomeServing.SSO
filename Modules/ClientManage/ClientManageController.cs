@@ -33,15 +33,16 @@ namespace HomeServing.SSO.Modules.ClientManage
         [HttpGet]
         public IActionResult AddClient()
         {
-            return View(new Client
+            return View(new ClientAddViewModel
             {
                 Enabled = true,
             });
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddClient(Client client)
+        public async Task<IActionResult> AddClient(ClientAddViewModel client)
         {
+            return View();
         }
     }
 }
