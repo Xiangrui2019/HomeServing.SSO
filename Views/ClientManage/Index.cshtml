@@ -12,8 +12,12 @@
             <tr>
                 <th scope="col">ID</th>
                 <th scope="col">名称</th>
+                <th scope="col">显示名称</th>
                 <th scope="col">简介</th>
+                <th scope="col">客户端Uri</th>
                 <th scope="col">是否启用</th>
+                <th scope="col">协议</th>
+                <th scope="col">创建时间</th>
                 <th>操作</th>
             </tr>
         </thead>
@@ -22,12 +26,16 @@
             {
                 <tr>
                     <th scope="row">@client.Id</th>
+                    <td>@client.ClientId</td>
                     <td>@client.ClientName</td>
                     <td>@client.Description</td>
+                    <td>@client.ClientUri</td>
                     <td>@client.Enabled</td>
+                    <td>@client.ProtocolType</td>
+                    <td>@client.Created</td>
                     <td scope="row">
                         <form asp-action="DeleteClient" asp-route-id="@client.Id" method="post">
-                            <a class="btn btn-primary" asp-action="EditClient" asp-route-id="@client.Id">编辑</a>
+                            <a class="btn btn-primary" asp-action="ShowClient" asp-route-id="@client.Id">查看</a>
                             <button type="submit" class="btn btn-danger"
                                     onclick="return confirm('确认删除这个客户端?');">
                                 删除

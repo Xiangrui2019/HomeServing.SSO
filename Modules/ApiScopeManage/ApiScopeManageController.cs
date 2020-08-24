@@ -119,8 +119,7 @@ namespace HomeServing.SSO.Modules.ApiScopeManage
 
             var apiScope = await _configurationDbContext
                 .ApiScopes
-                .Where(q => q.Id == model.Id)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(q => q.Id == model.Id);
 
             apiScope.Enabled = model.Enabled;
             apiScope.Name = model.Name;
@@ -152,8 +151,7 @@ namespace HomeServing.SSO.Modules.ApiScopeManage
 
             var apiScope = await _configurationDbContext
                 .ApiScopes
-                .Where(q => q.Id == model.ApiScopeId)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(q => q.Id == model.ApiScopeId);
 
             if (!apiScope.UserClaims.IsNullOrEmpty())
             {
@@ -262,8 +260,7 @@ namespace HomeServing.SSO.Modules.ApiScopeManage
         {
             var apiScope = await _configurationDbContext
                 .ApiScopes
-                .Where(q => q.Id == id)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(q => q.Id == id);
 
             _configurationDbContext.Remove(apiScope);
             await _configurationDbContext.SaveChangesAsync();

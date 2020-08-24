@@ -58,7 +58,18 @@ namespace HomeServing.SSO.Modules.ClientManage
         [HttpGet]
         public async Task<IActionResult> ShowClient(int id)
         {
-            return View();
+            var client = await _configurationDbContext
+                .Clients
+                .Include(q => q.AllowedScopes)
+                .Include(q => q.AllowedCorsOrigins)
+                .Include(q => q.AllowedGrantTypes)
+                .Include(q => q.PostLogoutRedirectUris)
+                .Include(q => q.RedirectUris)
+                .Include(q => q.ClientSecrets)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(q => q.Id == id);
+
+            return View(client);
         }
 
         [HttpPost]
@@ -66,8 +77,7 @@ namespace HomeServing.SSO.Modules.ClientManage
         {
             var client = await _configurationDbContext
                 .Clients
-                .Where(q => q.Id == id)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(q => q.Id == id);
 
             if (client == null)
             {
