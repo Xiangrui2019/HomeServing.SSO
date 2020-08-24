@@ -55,6 +55,12 @@ namespace HomeServing.SSO.Modules.ClientManage
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ShowClient(int id)
+        {
+            return View();
+        }
+
         [HttpPost]
         public async Task<IActionResult> DeleteClient(int id)
         {
