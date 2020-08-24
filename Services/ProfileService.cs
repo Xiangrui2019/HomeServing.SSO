@@ -7,20 +7,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeServing.SSO.Services
 {
     public class ProfileService : IProfileService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public ProfileService(UserManager<ApplicationUser> userManager)
+        public ProfileService(UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
-        private List<Claim> GetClaimsFromUser(ApplicationUser user)
+        private async Task<List<Claim>> GetClaimsFromUser(ApplicationUser user)
         {
             var claims = new List<Claim>
             {
@@ -33,6 +38,20 @@ namespace HomeServing.SSO.Services
                 new Claim(JwtClaimTypes.Gender, user.Gender.ToString())
             };
 
+            var roleBuilder = new StringBuilder();
+
+            foreach (var role in await _roleManager.Roles.AsNoTracking().ToListAsync())
+            {
+                if (await _userManager.IsInRoleAsync(user, role.Name))
+                {
+                    roleBuilder.Append($"{role.Name}/");
+                }
+            }
+
+            roleBuilder.Remove(roleBuilder.Length - 1, 1);
+
+            claims.Add(new Claim(JwtClaimTypes.Role, roleBuilder.ToString()));
+
             return claims;
         }
 
@@ -41,7 +60,7 @@ namespace HomeServing.SSO.Services
             var subjectId = context.Subject.Claims.FirstOrDefault(context => context.Type == "sub").Value;
             var user = await _userManager.FindByIdAsync(subjectId);
 
-            var claims = GetClaimsFromUser(user);
+            var claims = await GetClaimsFromUser(user);
             context.IssuedClaims = claims;
         }
 
