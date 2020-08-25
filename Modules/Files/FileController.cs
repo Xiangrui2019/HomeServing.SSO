@@ -35,6 +35,7 @@ namespace HomeServing.SSO.Modules.Files
         }
 
         [HttpGet]
+        [ResponseCache(Duration = 36000, Location = ResponseCacheLocation.Client)]
         public async Task<IActionResult> GetAvatarFile([FromQuery] string regexName)
         {
             var splited = regexName.Split("%%");
