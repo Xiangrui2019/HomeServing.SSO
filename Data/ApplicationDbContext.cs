@@ -10,5 +10,7 @@ namespace HomeServing.SSO.Data
             : base(options)
         {
         }
+
+        public DbSet<ImageCache> ImageCaches { get; set; }
     }
 }
