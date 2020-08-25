@@ -36,9 +36,9 @@ namespace HomeServing.SSO
                     AllowedGrantTypes = GrantTypes.Implicit,
                     ClientSecrets = { new Secret("www".Sha256()) },
 
-                    RedirectUris = { "http://www.homeserving.xyz/signin-oidc" },
+                    RedirectUris = { "https://www.homeserving.xyz/signin-oidc" },
 
-                    PostLogoutRedirectUris = { "http://www.homeserving.xyz/signout-callback-oidc" },
+                    PostLogoutRedirectUris = { "https://www.homeserving.xyz/signout-callback-oidc" },
 
                     AllowedScopes =
                     {
