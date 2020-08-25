@@ -36,10 +36,10 @@ namespace HomeServing.SSO
                     AllowedGrantTypes = GrantTypes.Implicit,
                     ClientSecrets = { new Secret("www".Sha256()) },
 
-                    RedirectUris = { "https://sso.homeserving.xyz/signin-oidc" },
+                    RedirectUris = { "http://sso.homeserving.xyz/signin-oidc" },
 
-                    PostLogoutRedirectUris = { "https://sso.homeserving.xyz/signout-callback-oidc" },
-                    
+                    PostLogoutRedirectUris = { "http://sso.homeserving.xyz/signout-callback-oidc" },
+
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
