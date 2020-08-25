@@ -1,4 +1,5 @@
 ﻿using IdentityModel;
+using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
 
@@ -27,6 +28,36 @@ namespace HomeServing.SSO
         {
             return new Client[]
             {
+                new Client
+                {
+                    ClientId = "www",
+                    ClientName = "HomeServing's 导航站",
+
+                    AllowedGrantTypes = GrantTypes.Code,
+                    ClientSecrets = { new Secret("www-x-x-x-x-0".Sha256()) },
+
+                    RedirectUris = { "https://sso.homeserving.xyz/signin-oidc" },
+
+                    FrontChannelLogoutUri = "https://sso.homeserving.xyz/signout-oidc",
+                    PostLogoutRedirectUris = { "https://sso.homeserving.xyz/signout-callback-oidc" },
+                    
+                    AlwaysIncludeUserClaimsInIdToken = true,
+
+                    AllowOfflineAccess = true, // offline_access
+                    AccessTokenLifetime = 2592000, // 2592000 seconds
+                    UpdateAccessTokenClaimsOnRefresh = true,
+                    RefreshTokenUsage = TokenUsage.ReUse,
+                    AlwaysSendClientClaims = true,
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Email,
+                        IdentityServerConstants.StandardScopes.Address,
+                        IdentityServerConstants.StandardScopes.Phone,
+                        IdentityServerConstants.StandardScopes.Profile
+                    }
+                },
             };
         }
     }
