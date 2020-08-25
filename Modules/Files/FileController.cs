@@ -6,7 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using HomeServing.SSO.Data;
+using HomeServing.SSO.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace HomeServing.SSO.Modules.Files
 {
@@ -15,23 +20,38 @@ namespace HomeServing.SSO.Modules.Files
         private readonly OssClient _ossClient;
         private readonly FileExtensionContentTypeProvider _extensionContentTypeProdvider;
         private readonly IConfiguration _configuration;
+        private readonly ApplicationDbContext _dbContext;
 
         public FileController(
             OssClient ossClient,
             FileExtensionContentTypeProvider extensionContentTypeProdvider,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ApplicationDbContext dbContext)
         {
             _ossClient = ossClient;
             _extensionContentTypeProdvider = extensionContentTypeProdvider;
             _configuration = configuration;
+            _dbContext = dbContext;
         }
 
         [HttpGet]
-        public IActionResult GetAvatarFile([FromQuery] string regexName)
+        public async Task<IActionResult> GetAvatarFile([FromQuery] string regexName)
         {
             var splited = regexName.Split("%%");
             var objectName = splited[0];
             var endFix = $".{splited[1].ToLower()}";
+
+            var objDb = await _dbContext
+                .ImageCaches
+                .AsNoTracking()
+                .FirstOrDefaultAsync(q => q.ImageKey == objectName);
+
+            if (objDb != null)
+            {
+                byte[] objBytes = Convert.FromBase64String(objDb.BytesString);
+
+                return File(objBytes, _extensionContentTypeProdvider.Mappings[endFix]);
+            }
 
             var obj = _ossClient.GetObject(
                 _configuration["AliyunOSS:BucketName"],
@@ -39,18 +59,28 @@ namespace HomeServing.SSO.Modules.Files
             var memoryStream = new MemoryStream();
 
 
-            using (var requestStream = obj.Content)
+            await using (var requestStream = obj.Content)
             {
                 var buf = new byte[1024];
                 var len = 0;
 
-                while ((len = requestStream.Read(buf, 0, 1024)) != 0)
+                while ((len = await requestStream.ReadAsync(buf, 0, 1024)) != 0)
                 {
-                    memoryStream.Write(buf, 0, len);
+                    await memoryStream.WriteAsync(buf, 0, len);
                 }
             }
 
-            return File(memoryStream.ToArray(),
+            var resultBytes = memoryStream.ToArray();
+
+            await _dbContext.AddAsync(new ImageCache
+            {
+                ImageKey = objectName,
+                BytesString = Convert.ToBase64String(resultBytes),
+            });
+
+            await _dbContext.SaveChangesAsync();
+
+            return File(resultBytes,
                 _extensionContentTypeProdvider.Mappings[endFix]);
         }
     }
