@@ -45,9 +45,6 @@ namespace HomeServing.SSO
 
                     AllowOfflineAccess = true, // offline_access
                     AccessTokenLifetime = 2592000, // 2592000 seconds
-                    UpdateAccessTokenClaimsOnRefresh = true,
-                    RefreshTokenUsage = TokenUsage.ReUse,
-                    AlwaysSendClientClaims = true,
 
                     AllowedScopes =
                     {
