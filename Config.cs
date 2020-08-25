@@ -33,19 +33,13 @@ namespace HomeServing.SSO
                     ClientId = "www",
                     ClientName = "HomeServing's 导航站",
 
-                    AllowedGrantTypes = GrantTypes.Code,
-                    ClientSecrets = { new Secret("www-x-x-x-x-0".Sha256()) },
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    ClientSecrets = { new Secret("www".Sha256()) },
 
                     RedirectUris = { "https://sso.homeserving.xyz/signin-oidc" },
 
-                    FrontChannelLogoutUri = "https://sso.homeserving.xyz/signout-oidc",
                     PostLogoutRedirectUris = { "https://sso.homeserving.xyz/signout-callback-oidc" },
                     
-                    AlwaysIncludeUserClaimsInIdToken = true,
-
-                    AllowOfflineAccess = true, // offline_access
-                    AccessTokenLifetime = 2592000, // 2592000 seconds
-
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
