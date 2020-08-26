@@ -39,13 +39,15 @@ namespace HomeServing.SSO
                     RedirectUris =
                     {
                         "https://www.homeserving.xyz/signin-oidc",
-                        "http://www.homeserving.xyz/signin-oidc"
+                        "http://www.homeserving.xyz/signin-oidc",
+                        "http://localhost:5001/signin-oidc"
                     },
 
                     PostLogoutRedirectUris =
                     {
                         "https://www.homeserving.xyz/signout-callback-oidc",
-                        "http://www.homeserving.xyz/signout-callback-oidc"
+                        "http://www.homeserving.xyz/signout-callback-oidc",
+                        "http://localhost:5001/signout-callback-oidc"
                     },
 
                     AllowedScopes =
